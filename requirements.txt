@@ -2,7 +2,7 @@ torch~=1.8.1
 transformers~=4.4.2
 pytorch_lightning==0.8.1
 strsim==0.0.3
-six==1.12.0
+six==1.15.0
 networkx==2.4.0
 numpy~=1.19.5
 scipy==1.4.1
@@ -16,5 +16,5 @@ python-dateutil==2.8.1
 boto3==1.14.40
 flashtext==2.7
 pandas~=1.2.3
-pke~=1.8.1
 nltk~=3.5
+pke @ https://github.com/boudinfl/pke.git

@@ -1,3 +1,4 @@
+import time
 import torch
 from transformers import T5ForConditionalGeneration, T5Tokenizer
 import spacy
@@ -5,16 +6,16 @@ import nltk
 import numpy
 from nltk import FreqDist
 
-nltk.download('brown')
-nltk.download('stopwords')
-nltk.download('popular')
 from nltk.corpus import brown
 from similarity.normalized_levenshtein import NormalizedLevenshtein
 from Questgen.mcq.mcq import tokenize_sentences
 from Questgen.mcq.mcq import get_keywords
 from Questgen.mcq.mcq import get_sentences_for_keyword
 from Questgen.mcq.mcq import generate_normal_questions
-import time
+
+nltk.download('brown')
+nltk.download('stopwords')
+nltk.download('popular')
 
 
 class QGen:

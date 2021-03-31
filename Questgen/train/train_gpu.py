@@ -1,25 +1,13 @@
 import argparse
-import glob
 import os
-import json
-import time
 import logging
 import random
-import re
-from itertools import chain
-from string import punctuation
-
 import nltk
-nltk.download('punkt')
-from nltk.tokenize import sent_tokenize
-
+import pytorch_lightning as pl
 import pandas as pd
 import numpy as np
 import torch
 from torch.utils.data import Dataset, DataLoader
-import pytorch_lightning as pl
-
-
 from transformers import (
     AdamW,
     T5ForConditionalGeneration,
@@ -27,12 +15,16 @@ from transformers import (
     get_linear_schedule_with_warmup
 )
 
+nltk.download('punkt')
+
+
 def set_seed(seed):
-  random.seed(seed)
-  np.random.seed(seed)
-  torch.manual_seed(seed)
-  if torch.cuda.is_available():
-    torch.cuda.manual_seed_all(seed)
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed_all(seed)
+
 
 set_seed(42)
 
@@ -145,35 +137,38 @@ class T5FineTuner(pl.LightningModule):
         val_dataset = get_dataset(tokenizer=self.tokenizer, type_path="boolq_val", args=self.hparams)
         return DataLoader(val_dataset, batch_size=self.hparams.eval_batch_size, num_workers=4)
 
+
 logger = logging.getLogger(__name__)
 
+
 class LoggingCallback(pl.Callback):
-  def on_validation_end(self, trainer, pl_module):
-    logger.info("***** Validation results *****")
-    if pl_module.is_logger():
-      metrics = trainer.callback_metrics
-      # Log results
-      for key in sorted(metrics):
-        if key not in ["log", "progress_bar"]:
-          logger.info("{} = {}\n".format(key, str(metrics[key])))
+    def on_validation_end(self, trainer, pl_module):
+        logger.info("***** Validation results *****")
+        if pl_module.is_logger():
+            metrics = trainer.callback_metrics
+            # Log results
+            for key in sorted(metrics):
+                if key not in ["log", "progress_bar"]:
+                    logger.info("{} = {}\n".format(key, str(metrics[key])))
 
-  def on_test_end(self, trainer, pl_module):
-    logger.info("***** Test results *****")
+    def on_test_end(self, trainer, pl_module):
+        logger.info("***** Test results *****")
 
-    if pl_module.is_logger():
-      metrics = trainer.callback_metrics
+        if pl_module.is_logger():
+            metrics = trainer.callback_metrics
 
-      # Log and save results to file
-      output_test_results_file = os.path.join(pl_module.hparams.output_dir, "test_results.txt")
-      with open(output_test_results_file, "w") as writer:
-        for key in sorted(metrics):
-          if key not in ["log", "progress_bar"]:
-            logger.info("{} = {}\n".format(key, str(metrics[key])))
-            writer.write("{} = {}\n".format(key, str(metrics[key])))
+            # Log and save results to file
+            output_test_results_file = os.path.join(pl_module.hparams.output_dir, "test_results.txt")
+            with open(output_test_results_file, "w") as writer:
+                for key in sorted(metrics):
+                    if key not in ["log", "progress_bar"]:
+                        logger.info("{} = {}\n".format(key, str(metrics[key])))
+                        writer.write("{} = {}\n".format(key, str(metrics[key])))
+
 
 args_dict = dict(
-    data_dir="", # path for data files
-    output_dir="", # path to save the checkpoints
+    data_dir="",  # path for data files
+    output_dir="",  # path to save the checkpoints
     model_name_or_path='t5-base',
     tokenizer_name_or_path='t5-base',
     max_seq_length=256,
@@ -187,9 +182,10 @@ args_dict = dict(
     gradient_accumulation_steps=16,
     n_gpu=1,
     early_stop_callback=False,
-    fp_16=False, # if you want to enable 16-bit training then install apex and set this to true
-    opt_level='O1', # you can find out more on optimisation levels here https://nvidia.github.io/apex/amp.html#opt-levels-and-properties
-    max_grad_norm=1.0, # if you enable 16-bit training then set this to a sensible value, 0.5 is a good default
+    fp_16=False,  # if you want to enable 16-bit training then install apex and set this to true
+    opt_level='O1',
+    # you can find out more on optimisation levels here https://nvidia.github.io/apex/amp.html#opt-levels-and-properties
+    max_grad_norm=1.0,  # if you enable 16-bit training then set this to a sensible value, 0.5 is a good default
     seed=42,
 )
 
@@ -197,7 +193,7 @@ train_path = "boolq_data/boolq_train.csv"
 val_path = "boolq_data/boolq_val.csv"
 
 train = pd.read_csv(train_path)
-print (train.head())
+print(train.head())
 
 tokenizer = T5Tokenizer.from_pretrained('t5-base')
 
@@ -233,14 +229,15 @@ class BooleanDataset(Dataset):
 
     def _build(self):
         for idx in range(len(self.data)):
-            passage,true_false,target = self.data.loc[idx, self.passage_column],self.data.loc[idx, self.true_false], self.data.loc[idx, self.target_column]
+            passage, true_false, target = self.data.loc[idx, self.passage_column], self.data.loc[idx, self.true_false], \
+                                          self.data.loc[idx, self.target_column]
             true_false = str(true_false)
-            if true_false.lower() =="true":
-                true_false ="yes"
+            if true_false.lower() == "true":
+                true_false = "yes"
             else:
                 true_false = "no"
             # input_ = "paraphrase: "+ input_ + ' </s>'
-            input_ = "truefalse: %s passage: %s </s>" % (true_false,passage)
+            input_ = "truefalse: %s passage: %s </s>" % (true_false, passage)
             target = target + " </s>"
 
             # tokenize inputs
@@ -257,7 +254,7 @@ class BooleanDataset(Dataset):
 
 
 dataset = BooleanDataset(tokenizer, 'boolq_data', 'boolq_val', 256)
-print("Val dataset: ",len(dataset))
+print("Val dataset: ", len(dataset))
 
 data = dataset[2]
 print(tokenizer.decode(data['source_ids']))
@@ -266,7 +263,7 @@ print(tokenizer.decode(data['target_ids']))
 if not os.path.exists('t5_boolq'):
     os.makedirs('t5_boolq')
 
-args_dict.update({'data_dir': 'boolq_data', 'output_dir': 't5_boolq', 'num_train_epochs':4,'max_seq_length':256})
+args_dict.update({'data_dir': 'boolq_data', 'output_dir': 't5_boolq', 'num_train_epochs': 4, 'max_seq_length': 256})
 args = argparse.Namespace(**args_dict)
 print(args_dict)
 
@@ -279,29 +276,29 @@ train_params = dict(
     gpus=args.n_gpu,
     max_epochs=args.num_train_epochs,
     early_stop_callback=False,
-    precision= 16 if args.fp_16 else 32,
+    precision=16 if args.fp_16 else 32,
     amp_level=args.opt_level,
     gradient_clip_val=args.max_grad_norm,
     checkpoint_callback=checkpoint_callback,
     callbacks=[LoggingCallback()],
 )
 
+
 def get_dataset(tokenizer, type_path, args):
-  return BooleanDataset(tokenizer=tokenizer, data_dir=args.data_dir, type_path=type_path,  max_len=args.max_seq_length)
+    return BooleanDataset(tokenizer=tokenizer, data_dir=args.data_dir, type_path=type_path, max_len=args.max_seq_length)
 
 
-
-print ("Initialize model")
+print("Initialize model")
 model = T5FineTuner(args)
 
 trainer = pl.Trainer(**train_params)
 
-print (" Training model")
+print(" Training model")
 trainer.fit(model)
 
-print ("training finished")
+print("training finished")
 
-print ("Saving model")
+print("Saving model")
 model.model.save_pretrained('t5_boolq')
 
-print ("Saved model")
+print("Saved model")
