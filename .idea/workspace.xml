@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="65fcf8cd-78fc-4cce-8d5c-b3f202fa2334" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Questgen/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/Questgen/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -63,7 +64,7 @@
       <workItem from="1617149536262" duration="5437000" />
       <workItem from="1617188890609" duration="11000" />
       <workItem from="1617189128165" duration="25000" />
-      <workItem from="1617189154400" duration="4064000" />
+      <workItem from="1617189154400" duration="4293000" />
     </task>
     <servers />
   </component>

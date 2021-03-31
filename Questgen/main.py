@@ -9,7 +9,6 @@ import boto3
 import zipfile
 import os
 import json
-from sense2vec import Sense2Vec
 import requests
 from collections import OrderedDict
 import string
