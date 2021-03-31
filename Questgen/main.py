@@ -1,18 +1,6 @@
-import numpy as np  # linear algebra
-import pandas as pd  # data processing, CSV file I/O (e.g. pd.read_csv)
-import time
 import torch
 from transformers import T5ForConditionalGeneration, T5Tokenizer
-import random
 import spacy
-import boto3
-import zipfile
-import os
-import json
-import requests
-from collections import OrderedDict
-import string
-import pke
 import nltk
 import numpy
 from nltk import FreqDist
@@ -20,12 +8,8 @@ from nltk import FreqDist
 nltk.download('brown')
 nltk.download('stopwords')
 nltk.download('popular')
-from nltk.corpus import stopwords
 from nltk.corpus import brown
 from similarity.normalized_levenshtein import NormalizedLevenshtein
-from nltk.tokenize import sent_tokenize
-from flashtext import KeywordProcessor
-from Questgen.encoding.encoding import beam_search_decoding
 from Questgen.mcq.mcq import tokenize_sentences
 from Questgen.mcq.mcq import get_keywords
 from Questgen.mcq.mcq import get_sentences_for_keyword
@@ -45,7 +29,6 @@ class QGen:
         self.device = device
         self.model = model
         self.nlp = spacy.load('en_core_web_sm')
-
         self.fdist = FreqDist(brown.words())
         self.normalized_levenshtein = NormalizedLevenshtein()
         self.set_seed(42)
@@ -94,55 +77,6 @@ class QGen:
             torch.cuda.empty_cache()
 
         return final_output
-
-
-class BoolQGen:
-
-    def __init__(self):
-        self.tokenizer = T5Tokenizer.from_pretrained('t5-base')
-        model = T5ForConditionalGeneration.from_pretrained('ramsrigouthamg/t5_boolean_questions')
-        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        model.to(device)
-        # model.eval()
-        self.device = device
-        self.model = model
-        self.set_seed(42)
-
-    def set_seed(self, seed):
-        numpy.random.seed(seed)
-        torch.manual_seed(seed)
-        if torch.cuda.is_available():
-            torch.cuda.manual_seed_all(seed)
-
-    def random_choice(self):
-        a = random.choice([0, 1])
-        return bool(a)
-
-    def predict_boolq(self, payload):
-        start = time.time()
-        inp = {
-            "input_text": payload.get("input_text"),
-            "max_questions": payload.get("max_questions", 4)
-        }
-
-        text = inp['input_text']
-        num = inp['max_questions']
-        sentences = tokenize_sentences(text)
-        joiner = " "
-        modified_text = joiner.join(sentences)
-        answer = self.random_choice()
-        form = "truefalse: %s passage: %s </s>" % (modified_text, answer)
-
-        encoding = self.tokenizer.encode_plus(form, return_tensors="pt")
-        input_ids, attention_masks = encoding["input_ids"].to(self.device), encoding["attention_mask"].to(self.device)
-
-        output = beam_search_decoding(input_ids, attention_masks, self.model, self.tokenizer)
-        if torch.device == 'cuda':
-            torch.cuda.empty_cache()
-
-        final = {'Text': text, 'Count': num, 'Boolean Questions': output}
-
-        return final
 
 
 class AnswerPredictor:
