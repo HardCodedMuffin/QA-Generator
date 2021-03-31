@@ -7,14 +7,12 @@ import spacy
 import re
 import random
 import json
-
+import en_core_web_sm
 from transformers import (
     AutoTokenizer,
     AutoModelForSeq2SeqLM,
     AutoModelForSequenceClassification,
 )
-
-nlp = spacy.load("en_core_web_sm")
 
 
 class QuestionGenerator:
@@ -158,7 +156,7 @@ class QuestionGenerator:
 
     def _prepare_qg_inputs_MC(self, sentences):
 
-        spacy_nlp = nlp.load()
+        spacy_nlp = en_core_web_sm.load()
         docs = list(spacy_nlp.pipe(sentences, disable=["parser"]))
         inputs_from_text = []
         answers_from_text = []
@@ -260,9 +258,10 @@ class QuestionGenerator:
             qa_list.append(qa)
         return qa_list
 
-    @staticmethod
-    def _make_dict(question, answer):
-        qa = {"question": question, "answer": answer}
+    def _make_dict(self, question, answer):
+        qa = {}
+        qa["question"] = question
+        qa["answer"] = answer
         return qa
 
 
