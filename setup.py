@@ -4,9 +4,8 @@ setup(name='Questgen',
       version='1.0.0',
       description='Question generator from any text',
       author='Questgen contributors',
-      author_email='vaibhavtiwarifu@gmail.com',
       packages=['Questgen', 'Questgen.encoding', 'Questgen.mcq'],
-      url="https://github.com/ramsrigouthamg/Questgen.ai",
+      url="https://github.com/mr-CLK/QA-Generator.git",
       install_requires=[
          
            'torch==1.5.1',
