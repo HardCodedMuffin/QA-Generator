@@ -3,7 +3,6 @@ import numpy as np
 from questiongenerator import QuestionGenerator
 from questiongenerator import print_qa
 
-
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -58,7 +57,7 @@ def main():
     )
     print_qa(qa_list, show_answers=args.show_answers)
 
-
+# taken from https://stackoverflow.com/questions/15008758/parsing-boolean-values-with-argparse
 def parse_bool_string(s):
     if isinstance(s, bool):
         return s
