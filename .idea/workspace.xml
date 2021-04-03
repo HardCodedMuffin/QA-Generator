@@ -3,12 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="65fcf8cd-78fc-4cce-8d5c-b3f202fa2334" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Questgen/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/Questgen/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Questgen/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/Questgen/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Questgen/mcq/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/Questgen/qg/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Questgen/mcq/mcq.py" beforeDir="false" afterPath="$PROJECT_DIR$/Questgen/qg/qg.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Questgen/train/train_gpu.py" beforeDir="false" afterPath="$PROJECT_DIR$/Questgen/train/train_gpu.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/setup.py" beforeDir="false" afterPath="$PROJECT_DIR$/setup.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Questgen/qg/qg.py" beforeDir="false" afterPath="$PROJECT_DIR$/Questgen/qg/qg.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -78,6 +74,8 @@
       <workItem from="1617381330524" duration="4551000" />
       <workItem from="1617396800764" duration="3760000" />
       <workItem from="1617408266859" duration="8000" />
+      <workItem from="1617442957041" duration="3194000" />
+      <workItem from="1617469181377" duration="1016000" />
     </task>
     <servers />
   </component>

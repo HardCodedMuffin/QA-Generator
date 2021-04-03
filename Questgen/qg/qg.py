@@ -172,4 +172,3 @@ def generate_normal_questions(keyword_sent_mapping, device, tokenizer, model):  
         output_array["questions"].append(individual_quest)
 
     return output_array
-
