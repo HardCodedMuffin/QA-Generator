@@ -5,7 +5,7 @@ setup(name='Questgen',
       description='Question generator from any text',
       author='Questgen contributors',
       author_email='vaibhavtiwarifu@gmail.com',
-      packages=['Questgen', 'Questgen.encoding', 'Questgen.mcq'],
+      packages=['Questgen', 'Questgen.encoding', 'Questgen.qg'],
       url="https://github.com/mr-CLK/QA-Generator.git",
       install_requires=[
 
@@ -28,5 +28,5 @@ setup(name='Questgen',
           'boto3==1.14.40',
           'flashtext==2.7'
       ],
-      package_data={'Questgen': ['questgen.py', 'mcq.py', 'train_gpu.py', 'encoding.py']}
+      package_data={'Questgen': ['questgen.py', 'qg.py', 'train_gpu.py', 'encoding.py']}
       )

@@ -79,9 +79,6 @@ def get_nouns_multipartite(text):
     stoplist = list(string.punctuation)
     stoplist += stopwords.words('english')
     extractor.candidate_selection(pos=pos, stoplist=stoplist)
-    # 4. build the Multipartite graph and rank candidates using random walk,
-    #    alpha controls the weight adjustment mechanism, see TopicRank for
-    #    threshold/method parameters.
     try:
         extractor.candidate_weighting(alpha=1.1,
                                       threshold=0.75,
@@ -150,7 +147,6 @@ def generate_normal_questions(keyword_sent_mapping, device, tokenizer, model):  
 
     encoding = tokenizer.batch_encode_plus(batch_text, pad_to_max_length=True, return_tensors="pt")
 
-    print("Running model for generation")
     input_ids, attention_masks = encoding["input_ids"].to(device), encoding["attention_mask"].to(device)
 
     with torch.no_grad():
@@ -158,8 +154,7 @@ def generate_normal_questions(keyword_sent_mapping, device, tokenizer, model):  
                               attention_mask=attention_masks,
                               max_length=150)
 
-    output_array = {}
-    output_array["questions"] = []
+    output_array = {"questions": []}
 
     for index, val in enumerate(answers):
         individual_quest = {}
@@ -178,7 +173,3 @@ def generate_normal_questions(keyword_sent_mapping, device, tokenizer, model):  
 
     return output_array
 
-
-def random_choice():
-    a = random.choice([0, 1])
-    return bool(a)

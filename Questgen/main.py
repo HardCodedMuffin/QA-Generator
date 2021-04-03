@@ -8,10 +8,10 @@ from nltk import FreqDist
 
 from nltk.corpus import brown
 from similarity.normalized_levenshtein import NormalizedLevenshtein
-from Questgen.mcq.mcq import tokenize_sentences
-from Questgen.mcq.mcq import get_keywords
-from Questgen.mcq.mcq import get_sentences_for_keyword
-from Questgen.mcq.mcq import generate_normal_questions
+from Questgen.qg.qg import tokenize_sentences
+from Questgen.qg.qg import get_keywords
+from Questgen.qg.qg import get_sentences_for_keyword
+from Questgen.qg.qg import generate_normal_questions
 
 nltk.download('brown')
 nltk.download('stopwords')
@@ -40,10 +40,10 @@ class QGen:
         if torch.cuda.is_available():
             torch.cuda.manual_seed_all(seed)
 
-    def predict_shortq(self, payload):
+    def predict_shortq(self, context, quantity):
         inp = {
-            "input_text": payload.get("input_text"),
-            "max_questions": payload.get("max_questions", 4)
+            "input_text": context.get("input_text"),
+            "max_questions": context.get("max_questions", quantity)
         }
 
         text = inp['input_text']
@@ -63,7 +63,7 @@ class QGen:
         final_output = {}
 
         if len(keyword_sentence_mapping.keys()) == 0:
-            print('ZERO')
+            print('NULL')
             return final_output
         else:
 
@@ -98,16 +98,16 @@ class AnswerPredictor:
         if torch.cuda.is_available():
             torch.cuda.manual_seed_all(seed)
 
-    def greedy_decoding(inp_ids, attn_mask, model, tokenizer):
-        greedy_output = model.generate(input_ids=inp_ids, attention_mask=attn_mask, max_length=256)
+    def greedy_decoding(self, attn_mask, model, tokenizer):
+        greedy_output = model.generate(input_ids=self, attention_mask=attn_mask, max_length=256)
         Question = tokenizer.decode(greedy_output[0], skip_special_tokens=True, clean_up_tokenization_spaces=True)
         return Question.strip().capitalize()
 
-    def predict_answer(self, payload):
+    def predict_answer(self, context):
         start = time.time()
         inp = {
-            "input_text": payload.get("input_text"),
-            "input_question": payload.get("input_question")
+            "input_text": context.get("input_text"),
+            "input_question": context.get("input_question")
         }
 
         context = inp["input_text"]
